@@ -7,6 +7,9 @@ permissions:
     id-token: write
     contents: read
 
+env:
+    ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
+
 jobs:
     aws-oidc-check:
         runs-on: ubuntu-latest
@@ -20,6 +23,7 @@ jobs:
                   role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
                   aws-region: ${{ vars.AWS_REGION }}
                   audience: sts.amazonaws.com
+                  role-duration-seconds: 900
 
             - name: Verify Identity & Access
               run: |
