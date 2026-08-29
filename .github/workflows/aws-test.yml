@@ -25,12 +25,7 @@ jobs:
                     exit 1
                   fi
 
-                  # 2. Decode and print the JWT payload to find the exact mismatch
-                  echo "=== DECODED OIDC TOKEN CLAIMS ==="
-                  echo "$OIDC_TOKEN" | jq -R 'split(".") | .[1] | @base64d | fromjson'
-
-                  # 3. Assume Role using AWS CLI
-                  echo "Attempting to assume role..."
+                  # 2. Assume Role using AWS CLI
                   ASSUMED_ROLE=$(aws sts assume-role-with-web-identity \
                     --role-arn "${{ vars.AWS_ROLE_TO_ASSUME }}" \
                     --role-session-name "GitHubActionsSession" \
@@ -38,7 +33,7 @@ jobs:
                     --duration-seconds 900 \
                     --output json)
 
-                  # 4. Export AWS Temporary Credentials
+                  # 3. Export AWS Temporary Credentials
                   echo "AWS_ACCESS_KEY_ID=$(echo $ASSUMED_ROLE | jq -r '.Credentials.AccessKeyId')" >> $GITHUB_ENV
                   echo "AWS_SECRET_ACCESS_KEY=$(echo $ASSUMED_ROLE | jq -r '.Credentials.SecretAccessKey')" >> $GITHUB_ENV
                   echo "AWS_SESSION_TOKEN=$(echo $ASSUMED_ROLE | jq -r '.Credentials.SessionToken')" >> $GITHUB_ENV
