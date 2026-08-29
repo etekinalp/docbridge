@@ -8,9 +8,9 @@
     "web"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
+    "build": "bun --filter './**' build",
+    "test": "bun --filter './**' test",
+    "lint": "bun --filter './**' lint",
     "dev:infra": "docker-compose up -d",
     "dev:infra:down": "docker-compose down"
   },
