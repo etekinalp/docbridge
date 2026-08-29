@@ -1,0 +1,32 @@
+name: Test AWS OIDC Connection
+
+on:
+    workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+    id-token: write # Required for requesting the JWT OIDC token
+    contents: read # Required for checkout
+
+jobs:
+    aws-oidc-check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Configure AWS Credentials via OIDC
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+                  aws-region: ${{ vars.AWS_REGION }}
+
+            - name: Verify Identity & Access
+              run: |
+                  echo "=== STS Get Caller Identity ==="
+                  aws sts get-caller-identity
+
+                  echo "=== Test S3 State Bucket Access ==="
+                  aws s3 ls "s3://${{ vars.TF_STATE_BUCKET }}"
+
+                  echo "=== Test DynamoDB Lock Table Access ==="
+                  aws dynamodb describe-table --table-name docbridge-tf-locks --query "Table.TableStatus"
