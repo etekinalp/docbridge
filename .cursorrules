@@ -1,0 +1,12 @@
+# DocBridge System Context & Guidelines
+
+## Architecture Ground Rules
+- Always consult `docs/BLUEPRINT.md` for business logic and flow boundaries.
+- Always check `docs/TDD.md` for database schemas, API contracts, and concurrency mechanisms.
+- Adhere strictly to ratified decision records in `docs/adrs/`.
+
+## Key Technical Decisions
+- **Infra:** Terraform modules only (`infra/modules/*` called by `infra/envs/*`).
+- **DB Isolation:** 3 isolated logical DBs on 1 PostgreSQL instance (`auth_db`, `platform_db`, `docbridge_db`).
+- **File Ingestion:** Direct-to-S3 uploads via presigned URLs (<500ms p99 job submission).
+- **Idempotency:** Deliveries enforce `source_task_id` with `ON CONFLICT (source_task_id) DO NOTHING`.

@@ -1,0 +1,9 @@
+{
+  "name": "@docbridge/fanout",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "echo \"Building fanout...\"",
+    "test": "echo \"No tests for fanout yet\" && exit 0"
+  }
+}

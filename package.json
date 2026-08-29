@@ -1,0 +1,20 @@
+{
+  "name": "docbridge",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "workers/*",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "dev:infra": "docker-compose up -d",
+    "dev:infra:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@docbridge/platform-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "echo \"Building platform...\"",
+    "test": "echo \"No tests for platform yet\" && exit 0"
+  }
+}

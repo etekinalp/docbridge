@@ -1,0 +1,25 @@
+{
+  "name": "@docbridge/user-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target node",
+    "start": "bun run dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "bun run src/migrations/index.ts"
+  },
+  "dependencies": {
+    "@docbridge/shared": "workspace:*",
+    "@aws-sdk/client-cognito-identity-provider": "^3.500.0",
+    "hono": "^4.0.0",
+    "postgres": "^3.4.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}

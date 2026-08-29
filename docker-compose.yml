@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: docbridge-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/local/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: docbridge-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,sqs,cognito-idp
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - ./infra/local/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+
+volumes:
+  pgdata:

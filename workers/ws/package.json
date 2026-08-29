@@ -1,0 +1,9 @@
+{
+  "name": "@docbridge/ws",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "echo \"Building ws...\"",
+    "test": "echo \"No tests for ws yet\" && exit 0"
+  }
+}
