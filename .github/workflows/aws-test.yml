@@ -1,11 +1,11 @@
 name: Test AWS OIDC Connection
 
 on:
-    workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+    workflow_dispatch:
 
 permissions:
-    id-token: write # Required for requesting the JWT OIDC token
-    contents: read # Required for checkout
+    id-token: write
+    contents: read
 
 jobs:
     aws-oidc-check:
@@ -19,6 +19,7 @@ jobs:
               with:
                   role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
                   aws-region: ${{ vars.AWS_REGION }}
+                  audience: sts.amazonaws.com
 
             - name: Verify Identity & Access
               run: |
