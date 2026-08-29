@@ -14,12 +14,30 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Configure AWS Credentials via OIDC
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                  role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
-                  aws-region: ${{ vars.AWS_REGION }}
-                  audience: sts.amazonaws.com
+            - name: Authenticate with AWS via OIDC (Native Bash)
+              run: |
+                  # 1. Fetch GitHub Web Identity OIDC Token
+                  OIDC_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                    "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
+
+                  if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+                    echo "Failed to retrieve GitHub OIDC token"
+                    exit 1
+                  fi
+
+                  # 2. Assume Role using AWS CLI
+                  ASSUMED_ROLE=$(aws sts assume-role-with-web-identity \
+                    --role-arn "${{ vars.AWS_ROLE_TO_ASSUME }}" \
+                    --role-session-name "GitHubActionsSession" \
+                    --web-identity-token "$OIDC_TOKEN" \
+                    --duration-seconds 900 \
+                    --output json)
+
+                  # 3. Export AWS Temporary Credentials
+                  echo "AWS_ACCESS_KEY_ID=$(echo $ASSUMED_ROLE | jq -r '.Credentials.AccessKeyId')" >> $GITHUB_ENV
+                  echo "AWS_SECRET_ACCESS_KEY=$(echo $ASSUMED_ROLE | jq -r '.Credentials.SecretAccessKey')" >> $GITHUB_ENV
+                  echo "AWS_SESSION_TOKEN=$(echo $ASSUMED_ROLE | jq -r '.Credentials.SessionToken')" >> $GITHUB_ENV
+                  echo "AWS_REGION=${{ vars.AWS_REGION }}" >> $GITHUB_ENV
 
             - name: Verify Identity & Access
               run: |
