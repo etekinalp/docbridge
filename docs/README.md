@@ -1,6 +1,81 @@
 # DocBridge Documentation Workspace
 
-Move your completed markdown specification files into this directory:
+
+# 🌉 DocBridge
+
+> Enterprise-grade, cloud-native document distribution and orchestration platform built on a modern TypeScript monorepo architecture.
+
+[![CI/CD Pipeline](https://github.com/DeveloperMastery/docbridge/actions/workflows/ci.yml/badge.svg)](https://github.com/DeveloperMastery/docbridge/actions/workflows/ci.yml)
+[![Terraform Infra](https://github.com/DeveloperMastery/docbridge/actions/workflows/infra.yml/badge.svg)](https://github.com/DeveloperMastery/docbridge/actions/workflows/infra.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/badge/node-%E2%89%A522-blue.svg)](https://nodejs.org)
+[![Terraform Version](https://img.shields.io/badge/terraform-%E2%89%A51.15.8-purple.svg)](https://www.terraform.io)
+
+---
+
+## 🎯 Overview
+
+**DocBridge** is a high-throughput, secure platform designed to ingest, process, transform, and distribute complex multi-format documentation pipelines at scale. Built using an event-driven architecture on AWS, DocBridge provides a unified React single-page application (SPA) frontend backed by robust Node.js microservices and serverless workers.
+
+---
+
+## 🏗️ Architecture & Tech Stack
+
+* **Monorepo Management:** `npm workspaces` with shared TypeScript packages.
+* **Frontend:** React SPA, Vite, Tailwind CSS.
+* **Backend Services:** Node.js, TypeScript (Auth API, DocBridge Core API, Document Platform Service).
+* **Workers:** AWS Lambda (Fan-out worker, Delivery worker) triggered via SQS.
+* **Infrastructure as Code (IaC):** Terraform (`modules/` + `envs/{dev,prod}`) with remote S3 backend & DynamoDB state locking.
+* **CI/CD:** GitHub Actions with OIDC AWS authentication (zero long-lived cloud credentials).
+* **Local Emulation:** Docker Compose, LocalStack (S3, SQS), and local PostgreSQL 16.
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+### 1. Prerequisites
+Ensure your local machine has the following installed:
+* **Node.js** $\ge 22$
+* **Docker & Docker Compose** (Colima or Docker Desktop)
+* **AWS CLI** & **Terraform** $\ge 1.15.8$
+
+### 2. Environment Setup
+```bash
+# Clone the repository and copy environment defaults
+cp .env.example .env
+
+# Install monorepo dependencies
+npm ci
+```
+
+### 3. Spin Up Local Infrastructure
+Launch PostgreSQL and LocalStack (AWS S3/SQS emulation):
+
+```Bash
+docker compose up --build -d
+4. Run Local Smoke Tests
+Verify that your backing services and local emulators are fully responsive:
+```
+
+```Bash
+./scripts/smoke-local.sh
+```
+
+### 🗺️ Roadmap & Milestones
+[x] M0: Infrastructure Foundation — Monorepo setup, Terraform baseline, OIDC CI/CD pipeline, and local Docker/LocalStack emulation. (Current)
+
+[ ] M1: ECS Services & Database Migration — VPC, RDS PostgreSQL, RDS Proxy, and deploying Fargate container tasks.
+
+[ ] M2: API Gateway & Auth Integration — AWS API Gateway routing, Cognito/Auth microservice handshake.
+
+[ ] M3: S3 Fan-Out & Async Worker Pipeline — Lambda workers, SQS queue integration, and file distribution.
+
+[ ] M4: React SPA & CloudFront Deployment — Frontend integration, S3 static hosting, and global CDN delivery.
+
+[ ] M5: Production Hardening & Monitoring — Observability, alarms, scaling policies, and final security audit.
+
+### 📄 Documentation
+Detailed guides and operational documentation are located in the docs/ directory:
 - `DOCBRIDGE_BLUEPRINT.md`
 - `DOCBRIDGE_TDD.md`
 - `DESIGN_REQUIREMENTS.md`
@@ -17,3 +92,8 @@ Move your completed markdown specification files into this directory:
 - `adrs/ADR-011-security-and-compliance.md`
 - `adrs/ADR-012-performance-and-scalability.md`
 - `adrs/ADR-013-infrastructure-as-code.md`
+
+
+### 📜 License
+Distributed under the MIT License. See LICENSE for more information.
+
