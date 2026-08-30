@@ -5,11 +5,11 @@
 
 > Enterprise-grade, cloud-native document distribution and orchestration platform built on a modern TypeScript monorepo architecture.
 
-[![CI/CD Pipeline](https://github.com/etekinalp/docbridge/actions/workflows/ci.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/ci.yml)
-[![Terraform Infra](https://github.com/etekinalp/docbridge/actions/workflows/infra.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/infra.yml)
+[![Shared CI](https://github.com/etekinalp/docbridge/actions/workflows/ci-shared.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/ci-shared.yml)
+[![AWS OIDC Test](https://github.com/etekinalp/docbridge/actions/workflows/aws-test.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/aws-test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node Version](https://img.shields.io/badge/node-%E2%89%A522-blue.svg)](https://nodejs.org)
-[![Terraform Version](https://img.shields.io/badge/terraform-%E2%89%A51.15.8-purple.svg)](https://www.terraform.io)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D22-blue.svg)](https://nodejs.org)
+[![Terraform Version](https://img.shields.io/badge/terraform-%3E%3D1.15.8-purple.svg)](https://www.terraform.io)
 
 ---
 
