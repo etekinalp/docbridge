@@ -11,6 +11,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./infra/local/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   localstack:
     image: localstack/localstack:4.14.0
@@ -22,6 +27,53 @@ services:
       - AWS_DEFAULT_REGION=us-east-1
     volumes:
       - ./infra/local/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  user-api:
+    build:
+      context: .
+      dockerfile: services/user-api/Dockerfile
+    container_name: docbridge-user-api
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/user_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  platform-api:
+    build:
+      context: .
+      dockerfile: services/platform-api/Dockerfile
+    container_name: docbridge-platform-api
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/platform_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  docbridge-api:
+    build:
+      context: .
+      dockerfile: services/docbridge-api/Dockerfile
+    container_name: docbridge-api
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/docbridge_db
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pgdata:
