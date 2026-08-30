@@ -5,8 +5,8 @@
 
 > Enterprise-grade, cloud-native document distribution and orchestration platform built on a modern TypeScript monorepo architecture.
 
-[![CI/CD Pipeline](https://github.com/DeveloperMastery/docbridge/actions/workflows/ci.yml/badge.svg)](https://github.com/DeveloperMastery/docbridge/actions/workflows/ci.yml)
-[![Terraform Infra](https://github.com/DeveloperMastery/docbridge/actions/workflows/infra.yml/badge.svg)](https://github.com/DeveloperMastery/docbridge/actions/workflows/infra.yml)
+[![CI/CD Pipeline](https://github.com/etekinalp/docbridge/actions/workflows/ci.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/ci.yml)
+[![Terraform Infra](https://github.com/etekinalp/docbridge/actions/workflows/infra.yml/badge.svg)](https://github.com/etekinalp/docbridge/actions/workflows/infra.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node Version](https://img.shields.io/badge/node-%E2%89%A522-blue.svg)](https://nodejs.org)
 [![Terraform Version](https://img.shields.io/badge/terraform-%E2%89%A51.15.8-purple.svg)](https://www.terraform.io)
