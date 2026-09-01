@@ -7,7 +7,7 @@ Acceptance criteria checklist for Milestone 0. This document reflects the curren
 - A `package-lock.json` is present, so `npm ci` is reproducible.
 - The root workspace now exposes a real `typecheck` script.
 - `npm test` now fails when underlying workspace tests fail.
-- Only two workflows exist in `.github/workflows`: `ci-shared.yml` and `aws-test.yml`.
+- Five workflows exist in `.github/workflows`: `ci-shared.yml`, `aws-test.yml`, `gitleaks.yml`, `infra.yml`, and `service-images.yml`.
 - The full CI/CD matrix described in the earlier milestone notes is not present yet.
 
 ## Phase 1 — Static Checks (No AWS, No Docker)
@@ -51,10 +51,10 @@ Acceptance criteria checklist for Milestone 0. This document reflects the curren
 
 | # | Check / Workflow | Expected Pass Criterion | Status |
 |---|---|---|---|
-| 4.1 | GitHub workflow coverage | The repo has the workflow surface needed for the milestone | FAIL |
-| 4.2 | `gitleaks` workflow | Secret scanning is present as a workflow | FAIL |
-| 4.3 | `service-*` workflows | Service images are built and pushed on `main` | FAIL |
-| 4.4 | `infra` workflow | Terraform validation and apply jobs exist | FAIL |
+| 4.1 | GitHub workflow coverage | The repo has the workflow surface needed for the milestone | PASS |
+| 4.2 | `gitleaks` workflow | Secret scanning is present as a workflow | PASS |
+| 4.3 | `service-*` workflows | Service images are built and pushed on `main` | PASS |
+| 4.4 | `infra` workflow | Terraform validation and apply jobs exist | PASS |
 
 ## Phase 5 — Automated Teardown & Cost Verification
 

@@ -31,6 +31,18 @@
 
 ---
 
+## 🤖 Workflows
+
+These are the GitHub Actions workflows currently in the repo and what each one does:
+
+* **`ci-shared.yml`** - Runs the main code quality gate on `main` and pull requests: installs dependencies, runs typecheck, lint, tests, and build.
+* **`aws-test.yml`** - Manually verifies AWS OIDC access from GitHub Actions by assuming the deployment role and calling `sts get-caller-identity`.
+* **`gitleaks.yml`** - Scans the repository for secrets and hardcoded credentials on pushes, pull requests, and manual runs.
+* **`infra.yml`** - Validates Terraform formatting and configuration for `infra/envs/global`, `infra/envs/dev`, and `infra/envs/prod`, and can manually apply the dev stack when requested.
+* **`service-images.yml`** - Builds the three service Docker images on pull requests, and on `main` it authenticates to AWS ECR and pushes versioned images for `user-api`, `platform-api`, and `docbridge-api`.
+
+---
+
 ## 🚀 Quick Start (Local Development)
 
 ### 1. Prerequisites

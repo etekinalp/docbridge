@@ -9,7 +9,7 @@ This is the runbook for the repo as it exists today. It separates what is implem
 - The root `package.json` now exposes a real `typecheck` script that fans out to workspace typechecks.
 - `npm test` no longer masks failures with `|| exit 0`.
 - `scripts/smoke-local.sh` now exits non-zero when any check fails.
-- Only two GitHub workflows exist today: `ci-shared.yml` and `aws-test.yml`.
+- Five GitHub workflows now exist today: `ci-shared.yml`, `aws-test.yml`, `gitleaks.yml`, `infra.yml`, and `service-images.yml`.
 
 ## 1. Local Verification
 
