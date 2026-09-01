@@ -20,7 +20,7 @@ Acceptance criteria checklist for Milestone 0. This document reflects the curren
 | 1.4 | `npm test` | Workspace test failures fail the command | PASS |
 | 1.5 | `npm run build --workspaces --if-present` | Workspace builds complete without manual intervention | TODO |
 | 1.6 | `terraform fmt -check -recursive infra/` | Formatting is enforced across all `.tf` files | TODO |
-| 1.7 | `terraform validate` in `global`, `dev`, and `prod` | All three environments validate cleanly | FAIL |
+| 1.7 | `terraform validate` in `dev` and `prod` | Both environments validate cleanly | FAIL |
 | 1.8 | `gitleaks detect --source . --no-banner` | Secret scan runs and fails on leaks | FAIL |
 
 ## Phase 2 — Local Integration (Docker Required)

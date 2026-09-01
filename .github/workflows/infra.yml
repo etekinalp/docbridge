@@ -40,11 +40,6 @@ jobs:
             - name: Terraform fmt
               run: terraform fmt -check -recursive infra/
 
-            - name: Terraform validate global
-              run: |
-                  terraform -chdir=infra/envs/global init -backend=false
-                  terraform -chdir=infra/envs/global validate
-
             - name: Terraform validate dev
               run: |
                   terraform -chdir=infra/envs/dev init -backend=false

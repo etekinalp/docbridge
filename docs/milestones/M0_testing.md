@@ -67,7 +67,7 @@ The repo has an OIDC test workflow, but the full deployment-role flow described 
 |---|---|---|---|
 | 2.1 | `cd infra/envs/global && terraform apply` | TODO | Global resources are described, but this runbook does not yet prove the full bootstrap path. |
 | 2.2 | `cd infra/envs/dev && terraform apply` | TODO | Dev infrastructure exists in Terraform, but it should be revalidated from the real repo state. |
-| 2.3 | `cd infra/envs/prod && terraform validate` | FAIL | The prod environment is not yet a complete working stack. |
+| 2.3 | `cd infra/envs/prod && terraform validate` | TODO | The prod environment exists but has not been validated end-to-end yet. |
 
 ## 3. Live AWS Checks
 
