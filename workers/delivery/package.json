@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"Building delivery...\"",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"No tests for delivery yet\" && exit 0"
   }
 }

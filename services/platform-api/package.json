@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"Building platform...\"",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"No tests for platform yet\" && exit 0"
   }
 }

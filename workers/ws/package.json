@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"Building ws...\"",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"No tests for ws yet\" && exit 0"
   }
 }

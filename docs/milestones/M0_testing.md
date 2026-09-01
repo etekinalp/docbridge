@@ -1,161 +1,90 @@
 # M0 Testing — Foundations
 
-**Milestone claim:** Local environment runs via Docker Compose, Terraform provisions the dev foundations, and CI pipelines pass cleanly on `main`.
+This is the runbook for the repo as it exists today. It separates what is implemented from what is still missing, because several of the milestone checks are documented before the repo can actually enforce them.
 
----
+## Current Repo Facts
+
+- The root `package.json` defines `build`, `test`, `typecheck`, `lint`, `dev:infra`, and `dev:infra:down`.
+- A `package-lock.json` is now present, so `npm ci` is a valid install path.
+- The root `package.json` now exposes a real `typecheck` script that fans out to workspace typechecks.
+- `npm test` no longer masks failures with `|| exit 0`.
+- `scripts/smoke-local.sh` now exits non-zero when any check fails.
+- Only two GitHub workflows exist today: `ci-shared.yml` and `aws-test.yml`.
 
 ## 1. Local Verification
 
 ### Prerequisites
-- Node.js ≥ 22
+
+- Node.js >= 22
 - Docker Desktop or OrbStack
-- Terraform ≥ 1.15.8
+- Terraform >= 1.15.8
 - AWS CLI v2
 
-### Execution Steps
+### Validation Matrix
 
-1. **Install Dependencies & Static Quality Checks:**
-   ```bash
-   npm ci
-   npm run typecheck && npm run lint && npm test
-   ```
+| # | Check | Current Repo Status | Notes |
+|---|---|---|---|
+| 1.1 | `npm ci` | PASS | The repo now installs cleanly from the checked-in lockfile. |
+| 1.2 | `npm run typecheck` | PASS | The root workspace now fans out to workspace typechecks. |
+| 1.3 | `npm run lint` | PASS | The repo now has a root ESLint config and lint script. |
+| 1.4 | `npm test` | PASS | The command now fails when a workspace test fails. |
+| 1.5 | `npm run build --workspaces --if-present` | TODO | Build wiring exists, but this milestone has not verified it end-to-end. |
+| 1.6 | `cp .env.example .env` | TODO | The template exists, but this runbook still needs to be exercised against the checked-in defaults. |
+| 1.7 | `docker compose up --build -d` | TODO | Compose exists, but this doc does not yet claim a verified local boot path. |
+| 1.8 | `docker compose ps` | TODO | Container health reporting still needs to be tied to a non-masked smoke check. |
+| 1.9 | `./scripts/smoke-local.sh` | PASS | The script now exits non-zero when any check fails. |
 
-    Expected outcome: All workspaces pass typecheck, linting, and 24+ unit tests across 8 test files.
+### Smoke Test Expectations
 
-### Environment Configuration:
+The current smoke script now fails the process when any dependency is unavailable. It checks LocalStack, PostgreSQL, and the service ports, and it is a real gate rather than an informational log.
 
-```Bash
-cp .env.example .env
-Spin Up Local Infrastructure:
-```
+### Optional Worker Check
 
-```Bash
-docker compose up --build -d
-Verify Container Status:
-```
+If the worker pipeline is running locally, dispatch a test message through LocalStack SQS and confirm the fan-out worker logs it. This remains a TODO until the worker entrypoint and queue wiring are treated as a gated check.
 
-```Bash
-docker compose ps
-Expected outcome: All containers report healthy.
-```
+## 2. Deploy to AWS Dev
 
-### Run Integration Smoke Tests:
+### Account Prerequisites
 
-``` Bash
-./scripts/smoke-local.sh
-Expected Smoke Output (Every Line PASS)
-auth | platform | docbridge-api /health — All three microservice containers respond.
+- Set up an AWS billing alarm before provisioning anything persistent.
+- Configure AWS CLI credentials for us-east-1 admin access.
 
-... /health/ready — Each service connects to its dedicated logical database using isolated credentials.
+### State Backend
 
-auth_svc denied on platform db — Confirms cross-service database access is blocked by construction (ADR-009).
-
-staging bucket exists + 4 queue ... exists lines — LocalStack mirrors AWS infrastructure topology (ADR-005/008).
-```
-
-#### Optional: Test Worker Event Consumption
-
-```Bash
-# Terminal 1: Run worker fanout process
-JOB_QUEUE_URL=http://localhost:4566/000000000000/docbridge-job-queue \
-AWS_ENDPOINT_URL=http://localhost:4566 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test \
-npm run dev -w @docbridge/worker-fanout
-
-# Terminal 2: Dispatch test message via LocalStack SQS
-docker compose exec localstack awslocal sqs send-message \
-  --queue-url http://localhost:4566/000000000000/docbridge-job-queue \
-  --message-body '{"jobId":"smoke-test"}'
-```
-
-Expected log in Terminal 1: fanout stub received job message.
-
-
-### Local Teardown
-```Bash
-docker compose down -v
-2. Deploy to AWS (dev) — Setup Runbook
-2.1 Account Prerequisites
-Set up an AWS Billing Alarm (e.g., $50/month threshold in AWS Budgets).
-```
-
-Configure AWS CLI credentials for us-east-1 admin access (aws configure or SSO).
-
-### Sanity check:
-
-```Bash
-aws sts get-caller-identity
-2.2 Remote State Backend (ADR-012)
-Bash
+```bash
 ./infra/bootstrap/create-state-backend.sh
-Copy printed values into infra/envs/{global,dev,prod}/backend.hcl.
 ```
 
-### 2.3 GitHub OIDC Role Setup
-Create or update the GitHub Actions deployment role (docbridge-github-deploy) with explicit trust conditions (repo:DeveloperMastery/docbridge:* and aud: sts.amazonaws.com).
+Copy the output into `infra/envs/{global,dev,prod}/backend.hcl`.
 
-### 2.4 GitHub Repository Secrets & Variables
-Add under Settings → Secrets and variables → Actions → Variables:
+### GitHub OIDC
 
-```AWS_DEPLOY_ROLE_ARN = arn:aws:iam::<ACCOUNT_ID>:role/docbridge-github-deploy
+The repo has an OIDC test workflow, but the full deployment-role flow described in the milestone still needs to be completed and verified against the actual Terraform and workflow stack.
 
-AWS_REGION = us-east-1
+### Provisioning Status
 
-TF_STATE_BUCKET = <from-bootstrap-step>
+| # | Step | Current Repo Status | Notes |
+|---|---|---|---|
+| 2.1 | `cd infra/envs/global && terraform apply` | TODO | Global resources are described, but this runbook does not yet prove the full bootstrap path. |
+| 2.2 | `cd infra/envs/dev && terraform apply` | TODO | Dev infrastructure exists in Terraform, but it should be revalidated from the real repo state. |
+| 2.3 | `cd infra/envs/prod && terraform validate` | FAIL | The prod environment is not yet a complete working stack. |
 
-Create Environments:
+## 3. Live AWS Checks
 
-dev (unprotected)
+| # | Check | Current Repo Status | Notes |
+|---|---|---|---|
+| 3.1 | `terraform plan` in `infra/envs/dev` | TODO | Drift validation should be rerun before any long pause in the work. |
+| 3.2 | RDS instance status | TODO | The infra ADRs describe the target state, but the doc should only mark this as verified after a live check. |
+| 3.3 | RDS Proxy status | TODO | Same as above. |
+| 3.4 | S3 staging bucket encryption and public access block | TODO | Same as above. |
+| 3.5 | CloudFront distribution | TODO | Same as above. |
+| 3.6 | Secrets Manager material | TODO | Same as above. |
 
-prod (requires manual reviewer approval)
+## 4. Teardown
+
+```bash
+./scripts/destroy.sh
+./scripts/check_cleanup.sh
 ```
 
-### 2.5 Provision Environment
-
-```Bash
-# Global resources (ECR repos)
-cd infra/envs/global
-terraform init -backend-config=backend.hcl && terraform apply
-
-# Dev environment (VPC, RDS, RDS Proxy, KMS, S3, CloudFront)
-cd ../dev
-terraform init -backend-config=backend.hcl && terraform apply
-```
-
-### 3. Verify Live AWS Infrastructure
-
-```Bash
-cd infra/envs/dev
-
-# 1. State Drift Check
-terraform plan   # Expect: "No changes."
-
-# 2. View Active Outputs
-terraform output
-
-# 3. RDS Security Check
-aws rds describe-db-instances --db-instance-identifier docbridge-dev \
-  --query 'DBInstances[0].{Public:PubliclyAccessible,Encrypted:StorageEncrypted,Status:DBInstanceStatus}'
-# Expect: Public=false, Encrypted=true, Status=available
-
-# 4. RDS Proxy Target Health Check
-aws rds describe-db-proxy-targets --db-proxy-name docbridge-dev \
-  --query 'Targets[0].TargetHealth.State'
-# Expect: "AVAILABLE"
-
-# 5. S3 Staging Bucket Security & Lifecycle
-BUCKET=$(terraform output -raw staging_bucket_name)
-aws s3api get-bucket-encryption --bucket "$BUCKET"
-aws s3api get-public-access-block --bucket "$BUCKET"
-aws s3api get-bucket-lifecycle-configuration --bucket "$BUCKET"
-
-# 6. Authenticated TLS-Only Transport Policy Check
-aws s3 ls "s3://${BUCKET}"                                # Succeeds over HTTPS
-aws s3 ls "s3://${BUCKET}" --endpoint-url [http://s3.amazonaws.com](http://s3.amazonaws.com)  # Fails with explicit deny
-4. Environment Teardown
-To eliminate recurring charges between development sessions:
-```
-
-```Bash
-./scripts/destroy.sh            # Destroys dev environment resources
-./scripts/check_cleanup.sh      # Audits AWS account across 7 categories to confirm zero charges
-```
+`check_cleanup.sh` is the right guard to run whenever the work pauses for a while, because it is the best existing check for making sure no billable AWS resources are left behind.

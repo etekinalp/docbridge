@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"Building fanout...\"",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"No tests for fanout yet\" && exit 0"
   }
 }

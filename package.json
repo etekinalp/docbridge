@@ -9,13 +9,17 @@
   ],
   "scripts": {
     "build": "bun --filter './**' build",
-    "test": "bun --filter './**' test || exit 0",
-    "lint": "bun --filter './**' lint",
+    "test": "bun --filter './**' test",
+    "typecheck": "bun --filter './**' typecheck",
+    "lint": "eslint . --ext .ts,.js,.mjs,.cjs",
     "dev:infra": "docker-compose up -d",
     "dev:infra:down": "docker-compose down"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bun": "^1.4.0",
-    "typescript": "^5.0.0"
+    "eslint": "^10.9.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.69.0"
   }
 }

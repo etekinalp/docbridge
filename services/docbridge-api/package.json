@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "echo \"Building docbridge-api...\"",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"No tests for docbridge-api yet\" && exit 0"
   },
   "dependencies": {
