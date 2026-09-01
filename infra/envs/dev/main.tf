@@ -208,21 +208,21 @@ resource "aws_db_subnet_group" "dev" {
 }
 
 resource "aws_db_instance" "dev" {
-  identifier                  = "${var.project_name}-${var.environment}"
-  engine                      = "postgres"
-  engine_version              = var.db_engine_version
-  instance_class              = var.db_instance_class
-  allocated_storage           = var.allocated_storage
-  storage_type                = "gp3"
-  storage_encrypted           = true
-  publicly_accessible         = false
-  db_subnet_group_name        = aws_db_subnet_group.dev.name
-  vpc_security_group_ids      = [aws_security_group.rds.id]
-  username                    = "postgres"
-  password                    = random_password.master_password.result
-  skip_final_snapshot         = true
-  deletion_protection         = false
-  auto_minor_version_upgrade  = true
+  identifier                 = "${var.project_name}-${var.environment}"
+  engine                     = "postgres"
+  engine_version             = var.db_engine_version
+  instance_class             = var.db_instance_class
+  allocated_storage          = var.allocated_storage
+  storage_type               = "gp3"
+  storage_encrypted          = true
+  publicly_accessible        = false
+  db_subnet_group_name       = aws_db_subnet_group.dev.name
+  vpc_security_group_ids     = [aws_security_group.rds.id]
+  username                   = "postgres"
+  password                   = random_password.master_password.result
+  skip_final_snapshot        = true
+  deletion_protection        = false
+  auto_minor_version_upgrade = true
 }
 
 # --- 5. RDS Proxy ---
